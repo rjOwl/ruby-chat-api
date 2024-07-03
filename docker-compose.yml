@@ -1,0 +1,71 @@
+version: "3.7"
+services:
+  db:
+    image: "mysql:8.0.36"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: root123
+        - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - db:/var/run/mysqld
+    logging:
+            driver: none
+    ports:
+      - "33061:3306"
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 5s
+        retries: 10
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
+    environment:
+      - node.name=chat-app-node-1
+      - cluster.name=es-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:9200"]
+        timeout: 5s
+        retries: 10
+  web:
+    build: .
+    command: "./bin/rails server --binding 0.0.0.0"
+    restart: always
+    environment:
+      DB_USERNAME: root
+      DB_PASSWORD: root123
+      DB_NAME: chat_api_development
+      DB_PORT: 3306
+      DB_HOST: db
+      RAILS_ENV: development
+      RAILS_MAX_THREADS: 5
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+    volumes:
+      - ./:/workspace
+      - bundle:/bundle
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+volumes:
+  db:
+  bundle:
+  elasticsearch:
+  redis:
