@@ -141,3 +141,10 @@
 - **URL**: http://localhost:3000/applications/e807b8377b5158aace76/chats/3/messages/3
 - **Body**: (empty)
 </details>
+
+## Notes:
+- For sql db we used indexes on the most used rows to enhance the querying like token and message.
+- Used elasticsearch for free text search
+
+- DB ERD:
+![Alt text](image.png)
