@@ -147,4 +147,4 @@
 - Used elasticsearch for free text search
 
 - DB ERD:
-![Alt text](image.png)
+![erd](https://github.com/rjOwl/ruby-chat-api/assets/11742610/2a4cae79-e8cf-46e5-bd4a-06a826038597)
