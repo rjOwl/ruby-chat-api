@@ -80,6 +80,7 @@
 
 <details>
 <summary> Message endpoints</summary>
+
 ### index
 
 - **Method**: GET
